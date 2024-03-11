@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
 import Singer from "../../models/singer.model";
+import { request } from "http";
 
 // [GET] /songs/:slugTopic
 export const list = async (req: Request, res: Response) => {
@@ -30,11 +31,36 @@ export const list = async (req: Request, res: Response) => {
 
     }
 
-    
+
     res.render('client/pages/songs/list.pug', {
         pageTitle: topic.title,
         songs: songs
     })
 }
 
+// [GET] /song/:slugSong  
+export const detail = async (req: Request, res: Response) => {
+    const slugSong: string = req.params.slugSong
+
+    const song = await Song.findOne({
+        slug: slugSong,
+        status: "active",
+        deleted: false
+    })
+    const singer = await Singer.findOne({
+        _id: song.singerId,
+        deleted: false
+    }).select('fullName')
+
+    const topic = await Topic.findOne({
+        _id: song.topicId,
+        deleted: false
+    }).select('title')
+    res.render('client/pages/songs/detail.pug', {
+        pageTitle: "Trang chi tiết bài hát",
+        song: song,
+        singer: singer,
+        topic: topic
+    })
+}
 
