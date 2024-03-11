@@ -7,6 +7,8 @@ import clientRoutes from "./routes/client/index.route";
 const app: Express = express()
 const port: string | number = process.env.PORT || 3000
 
+app.use(express.static("public"));
+
 dotenv.config()
 
 database.connect()
