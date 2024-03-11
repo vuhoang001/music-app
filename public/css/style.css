@@ -98,6 +98,7 @@
     animation-duration: 12s; 
     animation-iteration-count: infinite; 
     animation-timing-function: linear; 
+    animation-play-state: paused
 }
 
 @keyframes spin {
@@ -155,5 +156,9 @@
     color: #F57F20;
     padding: 15px 0; 
     
+}
+
+.inner-like.active span {
+    color: red
 }
 /* end singer detail  */

@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import Topic from "../../models/topic.model";
 import Song from "../../models/song.model";
 import Singer from "../../models/singer.model";
-import { request } from "http";
 
 // [GET] /songs/:slugTopic
 export const list = async (req: Request, res: Response) => {
@@ -61,6 +60,30 @@ export const detail = async (req: Request, res: Response) => {
         song: song,
         singer: singer,
         topic: topic
+    })
+}
+
+// [PATCH] /like/typeLike/:idSong
+export const like = async (req: Request, res: Response) => {
+    const idSong: string = req.params.idSong
+    const typeLike: string = req.params.typeLike
+    const song = await Song.findOne({
+        _id: idSong,
+        status: "active",
+        deleted: false
+    })
+
+    const newLike: number = typeLike == 'like' ? song.like + 1 : song.like - 1
+    // like: ["id_user_1", "id_user_2"]
+    await Song.updateOne({
+        _id: idSong
+    }, {
+        like: newLike
+    })
+    res.json({
+        code: 200,
+        message: "Thành công !",
+        like: newLike
     })
 }
 
