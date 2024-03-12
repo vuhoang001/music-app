@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Song from "../../models/song.model";
 import Singer from "../../models/singer.model";
-
+import { converToSlug } from "../../helpers/convertToSlug";
 // [GET] /search/result 
 
 export const result = async (req: Request, res: Response) => {
@@ -9,9 +9,13 @@ export const result = async (req: Request, res: Response) => {
     let newSongs = []
 
     if (keyword) {
-        const keyWordRegex = new RegExp(keyword, 'i')
+        const keywordRegex = new RegExp(keyword, 'i')
+        const stringSlug = new RegExp(converToSlug(keyword), 'i') 
         const songs = await Song.find({
-            title: keyWordRegex
+            $or: [
+                {title: keywordRegex},
+                {slug: stringSlug}
+            ]
         })
 
         for (const item of songs) {
@@ -24,7 +28,7 @@ export const result = async (req: Request, res: Response) => {
         newSongs = songs
     }
     res.render("client/pages/search/result", {
-        pageTitle: `Kết quả ${keyword}`,
+        pageTitle: `Kết quả: ${keyword}`,
         keyword: keyword,
         songs: newSongs
     })
