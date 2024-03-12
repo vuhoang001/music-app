@@ -7,7 +7,6 @@ import FavoriteSong from "../../models/favorite-song.model";
 
 // [GET] /songs/:slugTopic
 export const list = async (req: Request, res: Response) => {
-
     const topic = await Topic.findOne({
         slug: req.params.slugTopic,
         status: "active",
@@ -41,34 +40,37 @@ export const list = async (req: Request, res: Response) => {
 // [GET] /song/:slugSong  
 export const detail = async (req: Request, res: Response) => {
     const slugSong: string = req.params.slugSong
+    if (slugSong) {
+        const song = await Song.findOne({
+            slug: slugSong,
+            status: "active",
+            deleted: false
+        })
 
-    const song = await Song.findOne({
-        slug: slugSong,
-        status: "active",
-        deleted: false
-    })
-    const singer = await Singer.findOne({
-        _id: song.singerId,
-        deleted: false
-    }).select('fullName')
+        const singer = await Singer.findOne({
+            _id: song.singerId,
+            deleted: false
+        }).select('fullName')
 
-    const topic = await Topic.findOne({
-        _id: song.topicId,
-        deleted: false
-    }).select('title')
+        const topic = await Topic.findOne({
+            _id: song.topicId,
+            deleted: false
+        }).select('title')
 
-    const favoriteSong = await FavoriteSong.findOne({
-        songId: song.id
-    })
+        const favoriteSong = await FavoriteSong.findOne({
+            songId: song.id
+        })
 
-    song["isFavoriteSong"] = favoriteSong ? true : false
+        song["isFavoriteSong"] = favoriteSong ? true : false
 
-    res.render('client/pages/songs/detail.pug', {
-        pageTitle: "Trang chi tiết bài hát",
-        song: song,
-        singer: singer,
-        topic: topic
-    })
+        res.render('client/pages/songs/detail.pug', {
+            pageTitle: "Trang chi tiết bài hát",
+            song: song,
+            singer: singer,
+            topic: topic
+        })
+    }
+
 }
 
 // [PATCH] /like/typeLike/:idSong
@@ -99,6 +101,7 @@ export const like = async (req: Request, res: Response) => {
 export const favorite = async (req: Request, res: Response) => {
     const idSong = req.params.idSong
     const typeFavorite = req.params.typeFavorite
+
     switch (typeFavorite) {
         case "favorite": {
             const existFavorSong = await FavoriteSong.findOne({

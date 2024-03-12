@@ -82,6 +82,10 @@
     margin-bottom: 5px;
 }
 
+.song-item .inner-content .inner-heart.active {
+    color: #b90000;
+    font-weight: 600;
+}
 /* singer detail */
 .singer-detail .inner-play .inner-audio {
     flex: 1;
