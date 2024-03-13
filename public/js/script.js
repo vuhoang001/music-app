@@ -22,8 +22,19 @@ if (aplayer) {
     ap.on('pause', function () {
         avatar.style.animationPlayState = "paused"
     })
-}
+    ap.on('ended', () => {
+        const link = `/songs/listen/${dataSong._id}`
+        const option = {
+            method: "PATCH"
+        }
 
+        fetch(link, option)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+            })
+    })
+}
 // End APlayer 
 
 // Button like 
@@ -78,7 +89,6 @@ if (listButtonFavorite.length > 0) {
 const boxSearch = document.querySelector(".box-search")
 if (boxSearch) {
     const boxSugget = boxSearch.querySelector('.inner-suggest')
-    console.log(boxSugget)
     const input = boxSearch.querySelector("input[name='keyword']")
     input.addEventListener('keyup', () => {
         const keyword = input.value
