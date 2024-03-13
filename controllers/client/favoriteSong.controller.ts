@@ -7,17 +7,19 @@ export const index = async (req: Request, res: Response) => {
     const favoriteSongs = await FavoriteSong.find({
         deleted: false
     })
-    console.log(favoriteSongs)
     for (const item of favoriteSongs) {
         const infoSong = await Song.findOne({
             _id: item.songId
         })
-        const infoSinger = await Singer.findOne({
-            _id: infoSong.singerId
-        })
+        if(infoSong){
+
+            const infoSinger = await Singer.findOne({
+                _id: infoSong.singerId
+            })
+            item['infoSinger'] = infoSinger
+        }
 
         item['infoSong'] = infoSong
-        item['infoSinger'] = infoSinger
 
     }
     

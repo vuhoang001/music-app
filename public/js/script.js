@@ -74,3 +74,39 @@ if (listButtonFavorite.length > 0) {
 }
 // End button favorite
 
+// Suggest button
+const boxSearch = document.querySelector(".box-search")
+if (boxSearch) {
+    const boxSugget = boxSearch.querySelector('.inner-suggest')
+    console.log(boxSugget)
+    const input = boxSearch.querySelector("input[name='keyword']")
+    input.addEventListener('keyup', () => {
+        const keyword = input.value
+        const link = `/search/suggest?keyword=${keyword}`
+
+        fetch(link)
+            .then(res => res.json())
+            .then(data => {
+                const songs = data.songs;
+                if (songs.length > 0) {
+                    boxSugget.classList.add('show')
+                    const htmls = songs.map(song => {
+                        return `
+                            <a class="inner-item" href="/song/detail/${song.slug}">
+                                <div class="inner-image"> <img src=${song.avatar} /></div>
+                                <div class="inner-info">
+                                    <div class="inner-title">${song.title}</div>
+                                    <div class="inner-singer">${song.infoSinger.fullName}</div>
+                                </div>
+                            </a>
+                        `
+                    })
+                    const boxList = boxSugget.querySelector('.inner-list')
+                    boxList.innerHTML = htmls.join("")
+                } else {
+                    boxSugget.classList.remove('show')
+                }
+            })
+    })
+}
+// End suggest button 
