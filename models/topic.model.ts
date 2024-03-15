@@ -1,12 +1,13 @@
-import mongoose from "mongoose";
-
+import mongoose, { mongo } from "mongoose";
+import slug from 'mongoose-slug-updater'
+mongoose.plugin(slug)
 const topicSchema = new mongoose.Schema(
     {
         title: String,
         avatar: String,
         description: String,
-        status: String,
-        slug: String,
+        status: {type: String, default: 'active'},
+        slug: { type: String, slug: 'title', unique: true },
         deleted: {
             type: Boolean,
             default: false
